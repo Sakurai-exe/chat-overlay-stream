@@ -19,7 +19,8 @@ function createWindow() {
     },
   });
 
-  mainWindow.setAlwaysOnTop(true, "screen-saver", 1);
+  mainWindow.setAlwaysOnTop(true, "screen-saver");
+  mainWindow.setAlwaysOnTop(true, "pop-up-menu");
   mainWindow.loadFile(path.join(__dirname, "renderer/index.html"));
 }
 
