@@ -24,8 +24,7 @@
       "renderer/**/*"
     ],
     "win": {
-      "target": "nsis",
-      "icon": "renderer/vite.svg"
+      "target": "nsis"
     },
     "mac": {
       "target": "dmg"
