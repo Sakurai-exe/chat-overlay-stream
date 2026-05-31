@@ -1,7 +1,8 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, globalShortcut } = require("electron");
 const path = require("path");
 
 let mainWindow;
+let isGameMode = false;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -38,7 +39,25 @@ ipcMain.on("close-app", () => {
   app.quit();
 });
 
-app.whenReady().then(createWindow);
+ipcMain.on("set-ignore-mouse-events", (event, ignore) => {
+  mainWindow.setIgnoreMouseEvents(ignore, { forward: true });
+});
+
+app.whenReady().then(() => {
+  createWindow();
+
+  // Ctrl+Alt+G — переключить игровой режим (прозрачный для мыши)
+  globalShortcut.register("CommandOrControl+Alt+G", () => {
+    isGameMode = !isGameMode;
+    mainWindow.setIgnoreMouseEvents(isGameMode, { forward: true });
+    mainWindow.setFocusable(!isGameMode);
+    mainWindow.webContents.send("game-mode-changed", isGameMode);
+  });
+});
+
+app.on("will-quit", () => {
+  globalShortcut.unregisterAll();
+});
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
